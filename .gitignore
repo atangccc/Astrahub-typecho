@@ -1,0 +1,23 @@
+# 依赖与构建产物
+/console/node_modules/
+/assets/*.map
+
+# 部署副本 / 打包产物（从 Releases 分发，不入库）
+/dist/
+
+# 工具脚本目录（打包/自测/lint/上传，均不公开）
+/tools/
+
+# 内部开发文档（不公开）
+/DEVELOPMENT.md
+
+# 本地凭证 / 测试残留（绝不入库）
+*.local
+.env
+selftest-credentials.*
+
+# 编辑器 / 系统
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
