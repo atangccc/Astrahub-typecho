@@ -1,21 +1,18 @@
-import { computed, ref } from "vue";
+﻿import { computed, ref } from "vue";
 import { apiGet } from "../api";
 
 const PAGE_SIZE = 50;
-
-export interface PlanetLinkSourceSite {
-  name: string;
-  url: string;
-}
 
 export interface PlanetLinkItem {
   url: string;
   title: string;
   description: string;
   logo?: string;
-  tags?: string[];
   updatedAt: string;
-  sourceSites: PlanetLinkSourceSite[];
+  sourceSiteCount?: number;
+  galaxyName?: string;
+  acceptedInvitationCount?: number;
+  hotRank?: number;
   relationStatus?: string;
   relationKind?: string;
   targetSiteId?: string;
@@ -148,3 +145,4 @@ export function usePlanetLinks() {
     setQuery
   };
 }
+
