@@ -86,6 +86,14 @@ export async function removeFriendRelation(peerSiteId: string, reason = "") {
 }
 
 /** 本地建链：把对端站点写入本地友链表（接受邀请后调用，幂等）。 */
+export async function removeOwnFriendFollow(peerSiteId: string) {
+  const res = await apiPost<{ removed?: boolean; peerSiteUrl?: string }>("friendRemoveFollow", {
+    peerSiteId,
+  });
+  if (!res.ok) throw new Error(res.message || "删除友链失败");
+  return { removed: Boolean(res.data.removed), peerSiteUrl: String(res.data.peerSiteUrl || "") };
+}
+
 export async function reconcileFriendInvitation(invitation: FriendInvitationItem, currentSiteId: string) {
   const peer =
     invitation.fromSite?.siteId === currentSiteId ? invitation.toSite : invitation.fromSite;

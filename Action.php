@@ -133,6 +133,9 @@ class Action extends Base implements ActionInterface
             case 'friendRemoveRelation':
                 $this->handleFriendRemoveRelation();
                 break;
+            case 'friendRemoveFollow':
+                $this->handleFriendRemoveFollow();
+                break;
             case 'friendReconcile':
                 $this->handleFriendReconcile();
                 break;
@@ -637,6 +640,18 @@ class Action extends Base implements ActionInterface
             return;
         }
         $result = \AstraHub_FriendService::removeRelation($peerSiteId, $this->field($body, 'reason'));
+        $this->json($result, $result['success'] ? 200 : ($result['status'] ?: 400));
+    }
+
+    private function handleFriendRemoveFollow()
+    {
+        $body = $this->readJsonBody();
+        $peerSiteId = $this->field($body, 'peerSiteId');
+        if ($peerSiteId === '') {
+            $this->json(array('success' => false, 'message' => '缺少 peerSiteId'), 400);
+            return;
+        }
+        $result = \AstraHub_FriendService::removeFollow($peerSiteId);
         $this->json($result, $result['success'] ? 200 : ($result['status'] ?: 400));
     }
 

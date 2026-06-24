@@ -9,6 +9,7 @@ import { HERO_MASCOT_DATA_URI } from "../data/heroMascot";
 import {
   createFriendInvitation,
   fetchFriendInvitationLinkGroups,
+  removeOwnFriendFollow,
   removeFriendRelation
 } from "../composables/useFriendInvitations";
 
@@ -562,16 +563,22 @@ function canRemoveRelation(item: PlanetLinkItem) {
   if (isSelfLink(item)) {
     return false;
   }
-  if (!item.targetRegistered || !item.targetSupportsInvitation) {
-    return false;
-  }
-  if (!hasLocalLink(item)) {
+  const status = String(item.relationStatus || "").trim();
+  if (status !== "following" && status !== "mutual") {
     return false;
   }
   if (isInviting(item)) {
     return false;
   }
   return true;
+}
+
+function isMutualRelation(item: PlanetLinkItem) {
+  return String(item.relationStatus || "").trim() === "mutual";
+}
+
+function removeDialogIsMutual() {
+  return removeTarget.value ? isMutualRelation(removeTarget.value) : false;
 }
 
 function isRemoving(item: PlanetLinkItem) {
@@ -611,11 +618,14 @@ async function submitRemove() {
 
   removingTargets.value = [...removingTargets.value, peerSiteId];
   try {
-    const result = await removeFriendRelation(peerSiteId, removeReason.value);
-    if (result.removed) {
-      Toast.success("已解除友链关系");
+    const mutual = isMutualRelation(item);
+    const result = mutual
+      ? await removeFriendRelation(peerSiteId, removeReason.value)
+      : await removeOwnFriendFollow(peerSiteId);
+    if (mutual) {
+      Toast.success(result.removed ? "已解除友链关系" : "关系已解除（无变化）");
     } else {
-      Toast.success("鍏崇郴宸茶В闄わ紙鏃犲彉鍖栵級");
+      Toast.success(result.removed ? "已删除友链" : "友链已删除（无变化）");
     }
     removeDialogVisible.value = false;
     removeTarget.value = null;
@@ -623,7 +633,7 @@ async function submitRemove() {
 
     scheduleSilentReload();
   } catch (e) {
-    Toast.error(e instanceof Error ? e.message : "解除友链关系失败");
+    Toast.error(e instanceof Error ? e.message : "删除友链失败");
   } finally {
     removingTargets.value = removingTargets.value.filter((id) => id !== peerSiteId);
   }
@@ -1078,16 +1088,18 @@ watch(
 
     <div v-if="removeDialogVisible" class="invite-mask" @click.self="closeRemoveDialog">
       <div class="invite-dialog">
-        <div class="invite-dialog-title">解除友链关系</div>
+        <div class="invite-dialog-title">{{ removeDialogIsMutual() ? "解除友链关系" : "删除友链" }}</div>
         <div class="invite-dialog-sub">
           {{ removeTarget?.title || removeTarget?.url || "-" }}
         </div>
 
         <p class="remove-warning">
-          解除后将立即删除本站对该友链的本地链接，并通过邮件通知对方。此操作不可恢复。
+          {{ removeDialogIsMutual()
+            ? "解除后将删除双方星链关系，并通过邮件通知对方。此操作不可恢复。"
+            : "删除后仅取消本站对该站点的关注，不会通知对方，也不会影响对方是否关注本站。此操作不可恢复。" }}
         </p>
 
-        <div class="invite-field">
+        <div v-if="removeDialogIsMutual()" class="invite-field">
           <label class="invite-label">解除原因（可选）</label>
           <textarea
             v-model="removeReason"
@@ -1110,7 +1122,7 @@ watch(
             :disabled="removeTarget ? isRemoving(removeTarget) : true"
             @click="submitRemove"
           >
-            {{ removeTarget && isRemoving(removeTarget) ? "解除中..." : "确认解除" }}
+            {{ removeTarget && isRemoving(removeTarget) ? "处理中..." : (removeDialogIsMutual() ? "确认解除" : "确认删除") }}
           </button>
         </div>
       </div>
@@ -1155,7 +1167,7 @@ watch(
 .link-main{display:flex;align-items:center;gap:10px;min-width:0}
 .hot-rank-badge{position:relative;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:36px;height:34px;color:#2563eb;background:transparent;border:none}
 .hot-rank-icon{width:24px;height:24px;fill:currentColor}
-.hot-rank-number{position:absolute;right:0;bottom:1px;display:flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#fff;color:currentColor;border:1px solid rgba(148,163,184,.35);font-size:9px;font-weight:800;line-height:1;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.hot-rank-number{position:absolute;right:2px;bottom:3px;display:flex;align-items:center;justify-content:center;width:12px;height:12px;border-radius:999px;background:#fff;color:currentColor;border:1px solid rgba(148,163,184,.3);font-size:7px;font-weight:800;line-height:1;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .hot-rank-badge.rank-gold{color:#eab308}
 .hot-rank-badge.rank-silver{color:#94a3b8}
 .hot-rank-badge.rank-bronze{color:#cd7f32}

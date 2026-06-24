@@ -17,6 +17,16 @@
 - 收紧邀请列表字段间距，优化卡片可读性。
 - 清理多处乱码文案和旧展示残留。
 
+## [1.1.1] - 2026-06-24
+
+### 修复
+
+- 友链删除逻辑改为按关系状态分流：单向关注仅删除本站到对方的关注关系，互相关注才执行解除关系。
+- 新增 `friendRemoveFollow` 接口，Typecho 端可直接调用 Hub 的单向取消关注能力，并同步删除本地友链记录。
+- 调整友链星球中的删除确认文案：单向删除不再提示邮件通知，互关解除才提示会通知对方。
+- 修正删除成功与无变化提示文案，避免后台出现“关系已解除”乱码。
+- 微调友链星球的热点序号徽标样式，和其他端保持一致。
+
 ## [1.0.0] - 2026-06-15
 
 ### 初始发布
@@ -26,3 +36,4 @@
 
 [1.1.0]: https://github.com/atangccc/Astrahub-typecho/releases/tag/v1.1.0
 [1.0.0]: https://github.com/atangccc/Astrahub-typecho/releases/tag/v1.0.0
+[1.1.1]: https://github.com/atangccc/Astrahub-typecho/releases/tag/v1.1.1

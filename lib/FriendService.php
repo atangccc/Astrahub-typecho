@@ -173,6 +173,34 @@ class AstraHub_FriendService
         );
     }
 
+    public static function removeFollow($peerSiteId)
+    {
+        $ctx = self::ctx();
+        if (!$ctx) {
+            return self::fail('站点未接入');
+        }
+        $peerSiteId = trim((string) $peerSiteId);
+        if ($peerSiteId === '') {
+            return self::fail('缺少对端站点编号');
+        }
+        $path = '/v1/friend-follows/' . rawurlencode($peerSiteId) . '/remove';
+        $resp = self::client($ctx)->signedRequest('POST', $path, null, $ctx['siteId'], $ctx['apiKey']);
+        $json = is_array($resp['json']) ? $resp['json'] : array();
+        $ok = $resp['ok'] && (!isset($json['success']) || $json['success']);
+        if ($ok) {
+            $peerUrl = isset($json['peerSiteUrl']) ? (string) $json['peerSiteUrl'] : '';
+            self::deleteLocalLink($peerSiteId, $peerUrl);
+        }
+        return array(
+            'success' => $ok,
+            'status' => $resp['status'],
+            'message' => $ok ? 'ok' : self::msg($json, $resp),
+            'removed' => isset($json['removed']) ? (bool) $json['removed'] : false,
+            'peerSiteId' => isset($json['peerSiteId']) ? (string) $json['peerSiteId'] : $peerSiteId,
+            'peerSiteUrl' => isset($json['peerSiteUrl']) ? (string) $json['peerSiteUrl'] : '',
+        );
+    }
+
     private static function deleteLocalLink($peerSiteId, $peerUrl)
     {
         $peerSiteId = trim((string) $peerSiteId);
