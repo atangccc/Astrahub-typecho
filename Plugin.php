@@ -20,7 +20,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) {
  *
  * @package AstraHub
  * @author AstraHub
- * @version 1.1.1
+ * @version 1.1.2
  * @link https://astra.aobp.cn
  */
 class Plugin implements PluginInterface

@@ -563,6 +563,9 @@ function canRemoveRelation(item: PlanetLinkItem) {
   if (isSelfLink(item)) {
     return false;
   }
+  if (!item.targetRegistered) {
+    return false;
+  }
   const status = String(item.relationStatus || "").trim();
   if (status !== "following" && status !== "mutual") {
     return false;
