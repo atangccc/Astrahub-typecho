@@ -22,7 +22,7 @@ AstraHub 的目标是打破不同博客系统之间的孤岛，让各类生态�
 
 | 生态 | 状态 |
 | --- | --- |
-| Halo | ✅ 已接入 |
+| Halo | ✅ 已接入 [Halo](https://github.com/atangccc/Astrahub)|
 | Typecho | ✅ 已接入（本插件） |
 | WordPress | ✅ 已接入 [WordPress](https://github.com/atangccc/Astrahub-WordPress)| 
 | 更多生态 | 📮 持续扩展 |
