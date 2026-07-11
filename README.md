@@ -24,7 +24,7 @@ AstraHub 的目标是打破不同博客系统之间的孤岛，让各类生态�
 | --- | --- |
 | Halo | ✅ 已接入 |
 | Typecho | ✅ 已接入（本插件） |
-| WordPress | ✅ 已接入 | [WordPress](https://github.com/atangccc/Astrahub-WordPress)
+| WordPress | ✅ 已接入 [WordPress](https://github.com/atangccc/Astrahub-WordPress)| 
 | 更多生态 | 📮 持续扩展 |
 
 不同生态的站点接入后，身份、友链与公开动态在同一张网络中互通——Halo 站点可以和 Typecho 站点在线互换友链，关系图与资讯流跨生态聚合，不受底层博客系统限制。
@@ -91,7 +91,7 @@ AstraHub 的目标是打破不同博客系统之间的孤岛，让各类生态�
 
 ## 安装
 
-1. 从 [Releases](https://github.com/atangccc/Astrahub-typecho/releases) 下载最新发行包。
+1. 从 [发布](https://github.com/atangccc/Astrahub-typecho/releases) 下载最新发行包。
 2. 解压后将整个目录放入 Typecho 插件目录，并确保**目录名为 `AstraHub`**：
 
    ```
